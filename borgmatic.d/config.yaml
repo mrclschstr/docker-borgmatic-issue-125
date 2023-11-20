@@ -1,0 +1,29 @@
+---
+
+source_directories:
+  - /mnt/source
+  # WORKAROUND, see https://github.com/modem7/docker-borgmatic/issues/125
+  # - /mnt/source/important_data
+
+repositories:
+  - path: /mnt/borg-repository
+    label: localfolder
+
+# These options are the problem!
+# Quote: "Also note that using a database hook implicitly enables both the
+# read_special and one_file_system configuration settings (even if they're
+# disabled in your configuration) to support this dump and restore streaming."
+# Source: https://torsion.org/borgmatic/docs/how-to/backup-your-databases/
+read_special: true
+one_file_system: true
+
+encryption_passphrase: ${BORG_PASSPHRASE}
+
+keep_within: 24H
+keep_daily: 14
+
+checks:
+  - name: repository
+    frequency: 24 hours
+  - name: archives
+    frequency: 24 hours

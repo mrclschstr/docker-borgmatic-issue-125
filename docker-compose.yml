@@ -1,0 +1,26 @@
+---
+version: '3.7'
+
+services:
+  borgmatic:
+    # image: modem7/borgmatic-docker:1.8.2-1.2.5 # Works!
+    image: modem7/borgmatic-docker:1.8.2-1.2.6 # Does NOT work!
+    volumes:
+      # Borgmatic config file(s)
+      - ./borgmatic.d:/etc/borgmatic.d/
+      # Backup source
+      - ./important_data:/mnt/source/important_data
+      # Backup destination
+      - ./borg_repo:/mnt/borg-repository
+      # https://github.com/borgmatic-collective/docker-borgmatic/pull/216#issuecomment-1466362348
+      - borgmatic-cache:/root/.cache/borg
+      - borgmatic-config:/root/.config/borg
+      - borgmatic-checks:/root/.borgmatic
+    environment:
+      - CRON=disabled
+      - BORG_PASSPHRASE=SuperSecretPassword123
+
+volumes:
+  borgmatic-cache:
+  borgmatic-config:
+  borgmatic-checks:
